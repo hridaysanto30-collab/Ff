@@ -1,118 +1,128 @@
 const { getStreamsFromAttachment } = global.utils;
 const mediaTypes = ["photo", "png", "animated_image", "video", "audio"];
-const groupCache = {}; 
 
 module.exports = {
-config: {
-name: "bridge",
-aliases: ["br"],
-version: "15.0.0",
-author: "Milon",
-countDown: 2,
-role: 0, // 0 মানে এখন সব ইউজার ব্যবহার করতে পারবে
-shortDescription: "Bridge for all users with Expanded Group List",
-category: "Communication",
-guide: { en: "{pn} [Serial/TID] [Message] | {pn} list" }
-},
+  config: {
+    name: "bridge",
+    aliases: ["br"],
+    version: "20.0.0",
+    author: "Milon Hasan",
+    countDown: 1,
+    role: 0,
+    shortDescription: "Ultra Fast Bridge with Full Group List",
+    category: "Communication",
+    guide: { en: "{pn} list | Reply with [Number] [Message]" }
+  },
 
-onStart: async function ({ api, event, args, usersData, commandName }) {
-const { threadID, messageID, senderID, attachments } = event;
+  onStart: async function ({ api, event, args, message }) {
+    const { threadID } = event;
 
-// 1. Expanded List Option
-if (args[0] === "list") {
-try {
-const list = await api.getThreadList(100, null, ["INBOX"]);
-let msg = "┏━━━━━━❰ 🏢 GROUP LIST ❱━━━━━━┓\n\n";
-let count = 1;
-groupCache[threadID] = {}; 
+    // --- 1. SHOW FULL GROUP LIST (ULTRA FAST) ---
+    if (args[0] === "list") {
+      try {
+        // Increased limit to 500 to ensure all groups are fetched
+        const list = await api.getThreadList(500, null, ["INBOX"]);
+        let msg = "┏━━━━━━❰ 🏢 GROUP LIST ❱━━━━━━┓\n\n";
+        let count = 1;
+        const groupData = [];
 
-list.forEach(item => {
-if (item.isGroup && item.threadID !== threadID) { 
-msg += `${count}. 🏷️ ${item.name || "Unnamed Group"}\n🆔 ${item.threadID}\n\n`;
-groupCache[threadID][count] = item.threadID; 
-count++;
-}
-});
+        for (const item of list) {
+          if (item.isGroup && item.threadID !== threadID) {
+            msg += `${count}. 🏷️ ${item.name || "Unnamed Group"}\n\n`;
+            groupData.push({
+              index: count,
+              threadID: item.threadID
+            });
+            count++;
+          }
+        }
 
-if (count === 1) return api.sendMessage("❌ No other groups found!", threadID, messageID);
+        if (count === 1) return message.reply("❌ No other groups found!");
 
-msg += "┗━━━━━━━━━━━━━━━━━━━━━━┛\n💡 Usage: .bridge [Number] [Message]";
-return api.sendMessage(msg, threadID, messageID);
-} catch (err) {
-return api.sendMessage("❌ Error: Could not fetch the group list.", threadID, messageID);
-}
-}
+        msg += "┗━━━━━━━━━━━━━━━━━━━━━━┛\n💡 Reply with '[Number] [Message]' to connect.";
+        
+        return message.reply(msg, (err, info) => {
+          global.GoatBot.onReply.set(info.messageID, {
+            commandName: this.config.name,
+            type: "listReply",
+            groupData: groupData,
+            messageID: info.messageID
+          });
+        });
+      } catch (err) {
+        return message.reply("❌ Error: Failed to fetch group list quickly.");
+      }
+    }
+    
+    return message.reply("⚠️ Use '.bridge list' to see all available groups.");
+  },
 
-// 2. Send Bridge Message
-let targetTID = args[0];
-const content = args.slice(1).join(" ");
+/* --- [ 🔐 INTERNAL_SECURE_METADATA ] ---
+ * 🤖 BOT NAME: MILON BOT
+ * 👤 OWNER: MILON HASAN
+ * 🔗 FACEBOOK: https://www.facebook.com/share/17uGq8qVZ9/
+ * 📞 WHATSAPP: +880 1912603270
+ * 📍 LOCATION: NARAYANGANJ, BD
+ * --------------------------------------- */
 
-if (!targetTID || !content) {
-return api.sendMessage("⚠️ Please provide a Serial Number or TID and a message.\nExample: .bridge 3 Hello", threadID, messageID);
-}
+  onReply: async function ({ api, event, Reply, usersData, message }) {
+    const { threadID, messageID, senderID, body, attachments } = event;
+    const senderName = await usersData.getName(senderID);
 
-// Serial Check
-if (!isNaN(targetTID) && targetTID.length <= 3) {
-if (groupCache[threadID] && groupCache[threadID][targetTID]) {
-targetTID = groupCache[threadID][targetTID];
-} else {
-return api.sendMessage("❌ Serial number not found. Please run '.bridge list' first.", threadID, messageID);
-}
-}
+    // --- CASE 1: Quick Reply to Group List ---
+    if (Reply.type === "listReply") {
+      const input = body.split(" ");
+      const serial = parseInt(input[0]);
+      const content = input.slice(1).join(" ");
 
-const senderName = await usersData.getName(senderID);
+      const targetGroup = Reply.groupData.find(g => g.index === serial);
+      if (!targetGroup) return; 
 
-const formMessage = {
-body: `🔗 Milon connected group admin\n━━━━━━━━━━━━━━━━━━\n👤 From: ${senderName}\n💬 Message: ${content}\n━━━━━━━━━━━━━━━━━━\n(Reply to this message to send back!)`,
-attachment: await getStreamsFromAttachment(
-[...attachments, ...(event.messageReply?.attachments || [])]
-.filter(item => mediaTypes.includes(item.type))
-)
-};
+      if (!content) return message.reply("⚠️ Please enter a message after the number.\nExample: '1 Hello'");
 
-try {
-api.sendMessage(formMessage, targetTID, (err, info) => {
-if (err) return;
-global.GoatBot.onReply.set(info.messageID, {
-commandName,
-targetMessageID: info.messageID,
-backToTID: threadID,
-backToMID: messageID
-});
-});
-return api.sendMessage(`✅ Message sent successfully!`, threadID, messageID);
-} catch (err) {
-return api.sendMessage("❌ Error: Failed to send the message.", threadID, messageID);
-}
-},
+      const formMessage = {
+        body: `🔗 Milon connected group admin\n━━━━━━━━━━━━━━━━━━\n👤 From: ${senderName}\n💬 Message: ${content}\n━━━━━━━━━━━━━━━━━━\n(Reply to this message to send back!)`,
+        attachment: await getStreamsFromAttachment(attachments.filter(item => mediaTypes.includes(item.type)))
+      };
 
-onReply: async ({ api, event, Reply, usersData, commandName }) => {
-const { threadID, messageID, senderID, body, attachments, messageReply } = event;
-const senderName = await usersData.getName(senderID);
+      return api.sendMessage(formMessage, targetGroup.threadID, (err, info) => {
+        if (err) return message.reply("❌ Failed to bridge. Bot might be kicked.");
+        global.GoatBot.onReply.set(info.messageID, {
+          commandName: this.config.name,
+          type: "bridgeChat",
+          targetMessageID: info.messageID,
+          backToTID: threadID,
+          backToMID: messageID
+        });
+        message.reply(`✅ Connected! Message sent to group #${serial}`);
+      });
+    }
 
-const sendToTID = (threadID == Reply.backToTID) ? (messageReply ? messageReply.threadID : Reply.targetMessageID) : Reply.backToTID;
-const replyToMID = (threadID == Reply.backToTID) ? Reply.targetMessageID : Reply.backToMID;
+    // --- CASE 2: Continuous Bridge Chat ---
+    if (Reply.type === "bridgeChat") {
+      const sendToTID = (threadID == Reply.backToTID) ? Reply.targetMessageID : Reply.backToTID;
+      const replyToMID = (threadID == Reply.backToTID) ? Reply.targetMessageID : Reply.backToMID;
 
-const formMessage = {
-body: `📩 Bridge Reply from ${senderName}:\n━━━━━━━━━━━━━━━━━━\n${body || "Sent an attachment"}\n━━━━━━━━━━━━━━━━━━\n(Reply to continue)`,
-attachment: await getStreamsFromAttachment(
-attachments.filter(item => mediaTypes.includes(item.type))
-)
-};
+      const formMessage = {
+        body: `📩 Bridge Reply from ${senderName}:\n━━━━━━━━━━━━━━━━━━\n${body || "Sent an attachment"}\n━━━━━━━━━━━━━━━━━━\n(Reply to continue)`,
+        attachment: await getStreamsFromAttachment(attachments.filter(item => mediaTypes.includes(item.type)))
+      };
 
-try {
-api.sendMessage(formMessage, sendToTID, (err, info) => {
-if (err) return;
-global.GoatBot.onReply.set(info.messageID, {
-commandName,
-targetMessageID: info.messageID,
-backToTID: threadID,
-backToMID: messageID
-});
-}, replyToMID);
-api.setMessageReaction("✅", messageID, () => {}, true);
-} catch (e) {
-console.error(e);
-}
-}
+      try {
+        api.sendMessage(formMessage, sendToTID, (err, info) => {
+          if (err) return;
+          global.GoatBot.onReply.set(info.messageID, {
+            commandName: this.config.name,
+            type: "bridgeChat",
+            targetMessageID: info.messageID,
+            backToTID: threadID,
+            backToMID: messageID
+          });
+        }, replyToMID);
+        api.setMessageReaction("✅", messageID, () => {}, true);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
 };
