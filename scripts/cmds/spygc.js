@@ -6,7 +6,7 @@ module.exports = {
   config: {
     name: "spygc",
     aliases: ["spy", "gcinfo"],
-    version: "14.0.0",
+    version: "14.0.5",
     author: "Milon Hasan",
     countDown: 2,
     role: 0,
@@ -78,12 +78,14 @@ async function getGCInfo(api, id, message) {
   try {
     const info = await api.getThreadInfo(id);
     
-    // Fast Gender Counting
+    // Fast Gender Counting logic optimized
     let male = 0, female = 0;
-    info.userInfo.forEach(user => {
-      if (user.gender === "MALE") male++;
-      else if (user.gender === "FEMALE") female++;
-    });
+    if (info.userInfo) {
+        info.userInfo.forEach(user => {
+          if (user.gender === "MALE") male++;
+          else if (user.gender === "FEMALE") female++;
+        });
+    }
 
     const infoMsg = `╭──『 🛰️ 𝗦𝗽𝘆𝗚𝗖 𝗜𝗻𝗳𝗼 』──╮\n\n` +
                     `📝 𝗡𝗮𝗺𝗲: ${info.threadName || "No Name"}\n` +
@@ -100,6 +102,9 @@ async function getGCInfo(api, id, message) {
                     `╰──────────────╯`;
 
     if (info.imageSrc) {
+      const cachePath = path.join(__dirname, 'cache', `spy_${id}.png`);
+      fs.ensureDirSync(path.join(__dirname, 'cache'));
+
       const response = await axios({
         url: info.imageSrc,
         method: 'GET',
@@ -114,6 +119,7 @@ async function getGCInfo(api, id, message) {
       return message.reply(infoMsg);
     }
   } catch (e) {
-    return message.reply(`❌ Fetching Failed: ${e.message}`);
+    console.error(e);
+    return message.reply(`❌ Fetching Failed: This group info is restricted or unavailable.`);
   }
 }
