@@ -5,12 +5,12 @@ const path = require("path");
 module.exports = {
   config: {
     name: "gcinfo",
-    aliases: ["spy", "spygc", "groupinfo"],
-    version: "15.0.0",
+    aliases: ["gc", "spygc", "groupinfo"],
+    version: "16.0.0",
     author: "Milon Hasan",
     countDown: 2,
     role: 0,
-    shortDescription: "Fastest Group Monitoring Tool with Gender Count",
+    shortDescription: "Active Group Monitoring Tool with Gender Count",
     category: "Information",
     guide: {
       en: "{pn} | {pn} list"
@@ -31,13 +31,21 @@ module.exports = {
 
   onStart: async function ({ api, event, args, message }) {
     const { threadID } = event;
+    const botID = api.getCurrentUserID();
+
     try {
       if (args[0] === "list") {
-        const allThreads = await api.getThreadList(500, null, ["INBOX"]);
-        const groupList = allThreads.filter(group => group.isGroup);
-        if (groupList.length === 0) return message.reply("❌ No groups found in database.");
+        const allThreads = await api.getThreadList(200, null, ["INBOX"]);
+        
+        // Filter: Only groups where the bot is still a member
+        const groupList = allThreads.filter(group => 
+          group.isGroup && 
+          group.participantIDs.includes(botID)
+        );
 
-        let msg = "╭──『 🛰️ 𝗚𝗖 𝗜𝗻𝗳𝗼 𝗟𝗶𝘀𝘁 』──╮\n\n";
+        if (groupList.length === 0) return message.reply("❌ No active groups found.");
+
+        let msg = "╭──『 🛰️ 𝗔𝗰𝘁𝗶𝘃𝗲 𝗚𝗖 𝗟𝗶𝘀𝘁 』──╮\n\n";
         groupList.forEach((group, index) => {
           msg += `${index + 1}. 📦 ${group.name || "Unnamed Group"}\n`;
         });
@@ -103,6 +111,6 @@ async function getGCInfo(api, id, message) {
       return message.reply(infoMsg);
     }
   } catch (e) {
-    return message.reply(`❌ Fetching Failed: Info restricted.`);
+    return message.reply(`❌ Fetching Failed: The bot is no longer in this group.`);
   }
-                               }
+}
