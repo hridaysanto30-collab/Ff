@@ -8,20 +8,6 @@ module.exports = (api, threadModel, userModel, dashBoardModel, globalModel, user
 			: "./handlerEvents.js"
 	)(api, threadModel, userModel, dashBoardModel, globalModel, usersData, threadsData, dashBoardData, globalData);
 
-	// --- [ HELP FUNCTION: GET ALL COMMANDS ] ---
-	const getAllCommandNames = () => {
-		const commandNames = [];
-		for (const cmd of global.GoatBot.commands.values()) {
-			if (cmd.config && cmd.config.name) {
-				commandNames.push(cmd.config.name.toLowerCase());
-				if (cmd.config.aliases && Array.isArray(cmd.config.aliases)) {
-					commandNames.push(...cmd.config.aliases.map(a => a.toLowerCase()));
-				}
-			}
-		}
-		return commandNames;
-	};
-
 	return async function (event) {
 		if (
 			global.GoatBot.config.antiInbox == true &&
@@ -29,17 +15,6 @@ module.exports = (api, threadModel, userModel, dashBoardModel, globalModel, user
 			(event.senderID || event.userID || event.isGroup == false)
 		)
 			return;
-
-		// --- [ START: FIXED NO PREFIX SYSTEM ] ---
-		if (global.GoatBot.config.noPrefixMode && event.body && !event.body.startsWith(global.GoatBot.config.prefix)) {
-			const commandNames = getAllCommandNames();
-			const firstWord = event.body.trim().split(/\s+/)[0].toLowerCase();
-			
-			if (commandNames.includes(firstWord)) {
-				event.body = global.GoatBot.config.prefix + event.body;
-			}
-		}
-		// --- [ END: FIXED NO PREFIX SYSTEM ] ---
 
 		const message = createFuncMessage(api, event);
 
@@ -75,14 +50,12 @@ module.exports = (api, threadModel, userModel, dashBoardModel, globalModel, user
 
 				const isAdmin = global.GoatBot.config.adminBot.includes(event.userID);
 
-				// অ্যাডমিন "👎" দিলে ইউজার রিমুভ হবে
 				if (event.reaction === "👎" && isAdmin) {
 					api.removeUserFromGroup(event.senderID, event.threadID, err => {
 						if (err) console.log(err);
 					});
 				}
 
-				// অ্যাডমিন রাগের ইমোজি দিলে মেসেজ আনসেন্ড হবে
 				if (
 					isAdmin &&
 					(event.reaction === "😡" ||
