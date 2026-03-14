@@ -6,12 +6,12 @@ const path = require("path");
 module.exports = {
   config: {
     name: "ytmp4",
-    version: "4.3.0",
+    version: "4.7.0",
     author: "mahbub | fixed by Milon Pro",
     countDown: 5,
     role: 0,
     shortDescription: "YouTube downloader (No Prefix)",
-    longDescription: "Search and download YouTube videos with platform info",
+    longDescription: "Search and download YouTube videos with force-delete list",
     category: "media",
     guide: "ytmp4 <song name>",
     usePrefix: false 
@@ -51,7 +51,6 @@ module.exports = {
 
       let msg = "✨🔍 𝙔𝙤𝙪𝙏𝙪𝙗𝙚 𝙎𝙚𝙖𝙧𝙘𝙝 𝙍𝙚𝙨𝙪𝙡𝙩𝙨 ✨\n\n";
       videos.forEach((v, i) => {
-        // এখানে প্ল্যাটফর্ম/চ্যানেলের নাম যোগ করা হয়েছে
         msg += `🟢 ${i + 1}. ${v.title}\n⏱ 𝐃𝐮𝐫𝐚𝐭𝐢𝐨𝐧: ${v.timestamp}\n💻 𝐏𝐥𝐚𝐭𝐟𝐨𝐫𝐦: ${v.author.name}\n\n`;
       });
       msg += "➡ Reply with number (1-10)";
@@ -70,23 +69,26 @@ module.exports = {
   },
 
   onReply: async function ({ api, event, Reply }) {
-    if (event.senderID !== Reply.author) return;
+    const { threadID, messageID, body, senderID } = event;
+    if (senderID !== Reply.author) return;
 
-    const choice = parseInt(event.body);
+    const choice = parseInt(body);
     if (isNaN(choice) || choice < 1 || choice > 10)
-      return api.sendMessage("❌ মামা, ১ থেকে ১০ এর মধ্যে যেকোনো একটা নাম্বার দে!", event.threadID);
+      return api.sendMessage("❌ মামা, ১ থেকে ১০ এর মধ্যে নাম্বার দে!", threadID);
 
     const video = Reply.videos[choice - 1];
 
     try {
-      api.unsendMessage(Reply.messageID);
-      const loading = await api.sendMessage("⏳ Downloading video...", event.threadID);
+      // ১. লিস্ট ডিলিট করার সর্বোচ্চ চেষ্টা (Force Unsend)
+      await api.unsendMessage(Reply.messageID).catch(err => console.log("List Delete Failed: ", err));
+      
+      const loading = await api.sendMessage("⏳ Downloading video...", threadID);
 
       const infoRes = await axios.get(`https://mahabub-apis.fun/mahabub/ytmp4?url=${encodeURIComponent(video.url)}`);
       const info = infoRes.data;
-
       const format360 = info.formats.find(f => f.quality === "360p") || info.formats[0];
 
+      // ইনফো মেসেজ
       await api.editMessage(
         `⬇ Download Started\n\n🎥 ${info.title}\n📺 Channel: ${info.uploader}\n📥 Quality: ${format360.quality}`,
         loading.messageID
@@ -105,15 +107,20 @@ module.exports = {
       response.data.pipe(writer);
 
       writer.on("finish", async () => {
+        // ২. ভিডিও পাঠানোর আগে ডাউনলোড স্টার্টেড মেসেজ ডিলিট
+        await api.unsendMessage(loading.messageID).catch(err => console.log("Info Delete Failed: ", err));
+
         await api.sendMessage({
           body: `✅ এই নে মামা তোর ভিডিও!\n\n🎥 ${info.title}`,
           attachment: fs.createReadStream(filePath)
-        }, event.threadID);
+        }, threadID, messageID); // তোমার মেসেজে রিপ্লাই
+
         if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
       });
 
     } catch (err) {
-      api.sendMessage("❌ ডাউনলোড ফেইল হইছে মামা!", event.threadID);
+      console.error(err);
+      api.sendMessage("❌ ডাউনলোড ফেইল হইছে মামা!", threadID);
     }
   }
 };
