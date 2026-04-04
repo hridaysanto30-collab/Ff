@@ -12,7 +12,7 @@ module.exports = {
     name: "anicdp",
     aliases: ["animecdp"],
     version: "1.7",
-    author: "MahMUD",
+    author: "siyam",
     countDown: 5,
     role: 0,
     category: "media",
@@ -66,7 +66,7 @@ module.exports = {
 
     } catch (err) {
       console.error("Full error:", err.response?.data || err.message);
-      return message.reply("🥹error, contact MahMUD");
+      return message.reply("🥹error, contact siyam");
     }
   }
 };
