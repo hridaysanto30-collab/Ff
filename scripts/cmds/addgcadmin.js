@@ -3,7 +3,7 @@ module.exports = {
     name: "gcadmin",
     aliases: ['groupadmin', 'admingc', 'admingroup'],
     version: "1.5",
-    author: "Asif",
+    author: "siyam",
     countDown: 5,
     role: 1,
     shortDescription: "Manage group admins",
