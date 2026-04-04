@@ -5,7 +5,7 @@ config: {
 name: "accept",
 aliases: ['acp', 'requests'],
 version: "6.0.0",
-author: "Aphelion | fixed Milon",
+author: "siyam",
 countDown: 5,
 role: 0,
 shortDescription: "Accept sender's friend request with status check",
@@ -30,8 +30,8 @@ return api.sendMessage(`┏━━━━━━❰ ROLEX BOT ❱━━━━━━
 const formList = {
 av: api.getCurrentUserID(),
 fb_api_req_friendly_name: "FriendingCometFriendRequestsRootQueryRelayPreloader",
-fb_api_caller_class: "RelayModern",
-doc_id: "4499164963466303",
+fb_api_caller_class: "siyam",
+doc_id: "61568411310748",
 variables: JSON.stringify({ input: { scale: 3 } })
 };
 
@@ -49,8 +49,8 @@ return api.sendMessage(`┏━━━━━━❰ MILON BOT ❱━━━━━━
 const formAccept = {
 av: api.getCurrentUserID(),
 fb_api_req_friendly_name: "FriendingCometFriendRequestConfirmMutation",
-fb_api_caller_class: "RelayModern",
-doc_id: "3147613905362928",
+fb_api_caller_class: "siyam",
+doc_id: "61584641872032",
 variables: JSON.stringify({
 input: {
 source: "friends_tab",
