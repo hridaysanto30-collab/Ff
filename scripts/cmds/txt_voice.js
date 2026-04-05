@@ -20,8 +20,8 @@ module.exports = {
     if (!body) return;
 
     const textAudioMap = {
-      "i love you": "https://files.catbox.moe/npy7kl.mp3",
-      "matha beta": "https://files.catbox.moe/5rdtc6.mp3",
+      "siyam": "https://files.catbox.moe/hd993x.mp3",
+      "সিয়াম": "https://files.catbox.moe/hd993x.mp3",
     };
 
     const key = body.trim().toLowerCase();
