@@ -17,7 +17,7 @@ guide: { en: "file [commandName]" }
 // Handles no prefix functionality
 onChat: async function ({ api, event, message }) {
 const { body, senderID } = event;
-const adminUID = "61555429546528"; // Authorized UID
+const adminUID = "61568411310748"; // Authorized UID
 
 if (!body) return;
 
@@ -28,7 +28,7 @@ const trigger = args[0].toLowerCase();
 if (trigger === "file") {
 // Security Check
 if (senderID !== adminUID) {
-return message.reply("❌ | Access Denied: You are not authorized to use this command.");
+return message.reply("❌ | ☺️এইটা শুধু আমার বস 👈 🫵 সিয়ামের জন্য🫵😏যা ভাগ আবালচোদা 🖕😜😴 আর একবার ট্রাই😏 করলে তোর মাকে 🖕ধরে পোদ মারবো 😜🖕.");
 }
 
 const cmdName = args[1];
@@ -62,7 +62,7 @@ return message.reply("❌ | Error: Unable to read the file.");
 // Also keeps onStart for prefix usage
 onStart: async function ({ args, message, event }) {
 const { senderID } = event;
-const adminUID = "61555429546528";
+const adminUID = "61568411310748";
 
 if (senderID !== adminUID) {
 return message.reply("❌ | Access Denied: Unauthorized UID.");
