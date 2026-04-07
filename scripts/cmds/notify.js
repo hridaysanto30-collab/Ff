@@ -20,9 +20,9 @@ module.exports = {
     if (!msg) return api.sendMessage("⚠ Please provide a notification message.", event.threadID, event.messageID);
 
     const content =
-`🔔 ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ ꜰʀᴏᴍ ᴍɪʟᴏɴ ʙʀᴏ_🎀
+`🔔 ɴᴏᴛɪꜰɪᴄᴀᴛɪᴏɴ ꜰʀᴏᴍ sɪʏᴀᴍ ʜᴀsᴀɴ 🎀
 ━━━━━━━━━━━━
-💬 ᴍᴇꜱꜱᴀɢᴇ ʙʏ: ᴍɪʟᴏɴ ʜᴀsᴀɴ 🐢 (ᴏᴡɴᴇʀ)
+💬 ᴍᴇꜱꜱᴀɢᴇ ʙʏ: sɪʏᴀᴍ ʜᴀsᴀɴ 🐢 (ᴏᴡɴᴇʀ)
 
 📝 [ ${msg} ]🧸
 
@@ -148,4 +148,4 @@ async function downloadFile(url, ext) {
 
 function cleanup(files) {
   files.forEach(f => { try { fs.unlinkSync(f.path); } catch {} });
-}
+                                              }
