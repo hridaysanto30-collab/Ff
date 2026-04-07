@@ -33,7 +33,7 @@ module.exports = {
       "সিয়াম": "https://files.catbox.moe/hd993x.mp3",
 
       "nijhum": "https://files.catbox.moe/3u6shs.mp3",
-      "niju": "https://files.catbox.moe/3u6shs.mp3",
+      "@everyone": "https://files.catbox.moe/3u6shs.mp3",
       "নিঝুম": "https://files.catbox.moe/3u6shs.mp3"
     };
 
