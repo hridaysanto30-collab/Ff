@@ -32,8 +32,8 @@ module.exports = {
       "সিয়াম ভাই": "https://files.catbox.moe/9w6moo.mp3",
       "সিয়াম": "https://files.catbox.moe/9w6moo.mp3",
 
-      "Nijhum":"https://files.catbox.moe/5myzdz.mp4",
-      "@everyone": "https://files.catbox.moe/3u6shs.mp3",
+      "@তো্ঁমা্ঁগো্ঁ পি্ঁচ্ছি্ঁ উ্ঁদয়্ঁ তা্ঁহ":"https://files.catbox.moe/khdlld.mp4",
+      "@everyone": "htthttps://files.catbox.moe/khdlld.mp4ps://files.catbox.moe/3u6shs.mp3",
       "নিঝুম": "https://files.catbox.moe/5myzdz.mp4",
 
       // 🔥 নতুন ৬টা ইমোজি ট্রিগার
