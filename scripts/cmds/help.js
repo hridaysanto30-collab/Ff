@@ -57,7 +57,7 @@ module.exports = {
     name: "help",
     aliases: ["menu"],
     version: "2.0",
-    author: "SIYAM", // ✅ তোমার নাম বসানো
+    author: "Hriday ", // ✅ তোমার নাম বসানো
     role: 0,
     category: "info",
     shortDescription: "Show all commands",
@@ -104,7 +104,7 @@ module.exports = {
 
     // main menu same design
     if (!input) {
-      let msg = `╭───────❁\n│✨ 𝗦𝗜𝗬𝗔𝗠 𝗛𝗘𝗟𝗣 𝗟𝗜𝗦𝗧 ✨\n╰────────────❁\n`;
+      let msg = `╭───────❁\n│✨ মালয়েশিয়া সিঙ্গেল বয়   𝗛𝗘𝗟𝗣 𝗟𝗜𝗦𝗧 ✨\n╰────────────❁\n`;
 
       for (const cat of Object.keys(categories).sort()) {
         msg += `╭─────✰『 ${getCategoryEmoji(cat)} ${fontConvert(cat, "category")} 』\n`;
@@ -117,7 +117,7 @@ module.exports = {
 
       msg += `╭─────✰[🌟 𝐄𝐍𝐉𝐎𝐘 🌟]\n│> TOTAL COMMANDS: [${total}]\n│\n│> TYPE: [ ${prefix}HELP <COMMAND> ]\n│\n│> OWNER: SIYAM\n╰────────────✰\n`;
 
-      msg += `╭─────✰\n│ 💖 𝗦𝗜𝗬𝗔𝗠-𝗕𝗢𝗧 💖\n╰────────────✰`;
+      msg += `╭─────✰\n│ 💖 মালয়েশিয়া সিঙ্গেল বয়  💖\n╰────────────✰`;
 
       return message.reply({
         body: msg,
