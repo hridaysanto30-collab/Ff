@@ -19,7 +19,7 @@ module.exports = {
       const senderID = event.senderID;
 
       await message.reply({
-        body: "Tham video dicchi ektu Dara 😏",
+        body: "মালেশিয়ার সিঙ্গেল বয় বস কে জিজ্ঞাসা করি  😏",
       });
 
       const link = [
@@ -78,7 +78,7 @@ module.exports = {
 
       return api.sendMessage(
         {
-          body: "🥵🫵পাপির দল হাত মারবি না কিন্তু 🥵🫵 না হলে বস সিয়াম কে বলে দিব 🫣🐍",
+          body: "🥵🫵পাপির দল হাত মারবি না কিন্তু 🥵🫵 না হলে বস মালেশিয়ার সিঙ্গেল বয়  কে বলে দিব 🫣🐍",
           attachment: await global.utils.getStreamFromURL(randomLink)
         },
         event.threadID,
@@ -87,7 +87,7 @@ module.exports = {
 
     } catch (err) {
       console.error(err);
-      return message.reply("❌ ⏳ দাঁড়া বস সিয়াম কে জিজ্ঞেস করে আসি!");
+      return message.reply("❌ ⏳ দাঁড়া বস মালেশিয়ার সিঙ্গেল বয় কে জিজ্ঞেস করে আসি!");
     }
   }
 };
