@@ -31,12 +31,38 @@ module.exports = {
       "siyam": "https://files.catbox.moe/9w6moo.mp3",
       "সিয়াম ভাই": "https://files.catbox.moe/9w6moo.mp3",
       "সিয়াম": "https://files.catbox.moe/9w6moo.mp3",
+const textAudioMap = {
 
-      "@তো্ঁমা্ঁগো্ঁ পি্ঁচ্ছি্ঁ উ্ঁদয়্ঁ তা্ঁহ":"https://files.catbox.moe/khdlld.mp4",
-      "@everyone": "htthttps://files.catbox.moe/khdlld.mp4ps://files.catbox.moe/3u6shs.mp3",
-      "নিঝুম": "https://files.catbox.moe/5myzdz.mp4",
+  // 💕 Love / Cute Girl Voice
+  "i love you": "https://files.catbox.moe/m5djca.mp3",
+  "love you": "https://files.catbox.moe/m5djca.mp3",
+  "jan": "https://files.catbox.moe/uy7mrv.mp3",
+  "baby": "https://files.catbox.moe/uy7mrv.mp3",
 
-      // 🔥 নতুন ৬টা ইমোজি ট্রিগার
+  // 😘 Flirty Voice
+  "miss you": "https://files.catbox.moe/9gyjwp.mp3",
+  "kiss": "https://files.catbox.moe/9gyjwp.mp3",
+  "come": "https://files.catbox.moe/uy7mrv.mp3",
+
+  // 😂 Cute Funny Girl
+  "hello": "https://files.catbox.moe/3u6shs.mp3",
+  "hi": "https://files.catbox.moe/3u6shs.mp3",
+  "what": "https://files.catbox.moe/e8ebel.mp3",
+
+  // 😈 Attitude Girl Voice
+  "attitude": "https://files.catbox.moe/r5uz42.mp3",
+  "hot": "https://files.catbox.moe/m5djca.mp3",
+
+  // 🥺 Emotional Voice
+  "sad": "https://files.catbox.moe/9gyjwp.mp3",
+  "cry": "https://files.catbox.moe/9gyjwp.mp3",
+
+  // 🔥 Special Trigger
+  "good night": "https://files.catbox.moe/m5djca.mp3",
+  "good morning": "https://files.catbox.moe/uy7mrv.mp3"
+};
+
+      // 🙈 নতুন ৬টা ইমোজি ট্রিগার
       ",sex": "https://files.catbox.moe/uy7mrv.mp3",
       ",hot": "https://files.catbox.moe/m5djca.mp3",
       "s+n": "https://files.catbox.moe/w9doti.mp4",
