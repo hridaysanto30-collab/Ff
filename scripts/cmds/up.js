@@ -10,7 +10,7 @@ config: {
 name: "up",
 aliases: ["uptime", "status"],
 version: "22.0.0",
-author: "Siyam Hasan",
+author: "hriday hasan shanto",
 countDown: 5,
 role: 0,
 category: "system",
