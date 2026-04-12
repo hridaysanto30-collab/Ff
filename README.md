@@ -1,5 +1,5 @@
 <!-- Banner Image -->
-<img src="https://files.catbox.moe/41hfau.jpg" alt="banner">
+<img src="https://i.imgur.com/d9S9s9I.jpeg" alt="banner">
 
 <h1 align="center"><img src="./dashboard/images/logo-non-bg.png" width="22px"> 💎 𝑺𝒊𝒚𝒂𝒎 𝑪𝒉𝗮𝘁 𝑩𝗼𝘁 💎</h1>
 
@@ -18,15 +18,15 @@
 <table align="center" border="1" cellpadding="8" cellspacing="0">
   <tr>
     <th>👤 Owner Name</th>
-    <td>✨ Uday Hasan Siyam ✨</td>
+    <td>✨ hriday hassan santo ✨</td>
   </tr>
   <tr>
     <th>🤖 Bot Name</th>
-    <td>💎 𝑺𝒊𝒚𝒂𝒎 𝑪𝒉𝗮𝘁 𝑩𝗼𝘁 💎</td>
+    <td>💎  𝑪𝒉𝗮𝘁 𝑩𝗼𝘁 💎</td>
   </tr>
   <tr>
     <th>🎂 Age</th>
-    <td>18 🔥</td>
+    <td>21+ 🔥</td>
   </tr>
   <tr>
     <th>🚹 Gender</th>
@@ -46,11 +46,11 @@
   </tr>
   <tr>
     <th>📘 Facebook</th>
-    <td><a href="https://www.facebook.com/profile.php?id=61568411310748">👉 Visit Profile</a></td>
+    <td><a href="https://www.facebook.com/share/1G2xBn4U1E/">👉 Visit Profile</a></td>
   </tr>
   <tr>
     <th>💬 Messenger</th>
-    <td><a href="https://m.me/j/AbZI7bjXz2MoDQpa/?send_source=gc%3Acopy_invite_link_c">👉 Join Chat</a></td>
+    <td><a href="https://m.me/j/AbboBpcdGCgCx1ln/?send_source=gc%3Acopy_invite_link_c">👉 Join Chat</a></td>
   </tr>
   <tr>
     <th>📱 WhatsApp</th>
@@ -69,7 +69,7 @@
   <tr>
     <th>🔥 My Official Group 🔥</th>
     <td style="background: linear-gradient(90deg, #ff0000, #0000ff); color: #fff; text-align: center;">
-      <a href="https://m.me/j/AbZZP2nV-EVZQPeX/?send_source=gc%3Acopy_invite_link_c" style="color:#fff;">
+      <a href="https://m.me/j/AbboBpcdGCgCx1ln/?send_source=gc%3Acopy_invite_link_c" style="color:#fff;">
         🚀 JOIN NOW 🔥
       </a>
     </td>
