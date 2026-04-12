@@ -6,7 +6,7 @@ let xfont = null;
 let yfont = null;
 let categoryEmoji = null;
 
-const HELP_GIF = "https://i.imgur.com/d9S9s9I.jpeg";
+const HELP_GIF = "https://files.catbox.moe/g5vr8h.mp4";
 
 async function loadResources() {
   try {
@@ -57,7 +57,7 @@ module.exports = {
     name: "help",
     aliases: ["menu"],
     version: "2.0",
-    author: "Hriday ", // ✅ তোমার নাম বসানো
+    author: "hriday", // ✅ তোমার নাম বসানো
     role: 0,
     category: "info",
     shortDescription: "Show all commands",
@@ -104,7 +104,7 @@ module.exports = {
 
     // main menu same design
     if (!input) {
-      let msg = `╭───────❁\n│✨ মালয়েশিয়া সিঙ্গেল বয়   𝗛𝗘𝗟𝗣 𝗟𝗜𝗦𝗧 ✨\n╰────────────❁\n`;
+      let msg = `╭───────❁\n│✨ মালয়েশিয়া সিঙ্গেল  বয় 𝗛𝗘𝗟𝗣 𝗟𝗜𝗦𝗧 ✨\n╰────────────❁\n`;
 
       for (const cat of Object.keys(categories).sort()) {
         msg += `╭─────✰『 ${getCategoryEmoji(cat)} ${fontConvert(cat, "category")} 』\n`;
@@ -115,9 +115,9 @@ module.exports = {
 
       const total = Object.values(categories).reduce((a, b) => a + b.length, 0);
 
-      msg += `╭─────✰[🌟 𝐄𝐍𝐉𝐎𝐘 🌟]\n│> TOTAL COMMANDS: [${total}]\n│\n│> TYPE: [ ${prefix}HELP <COMMAND> ]\n│\n│> OWNER: SIYAM\n╰────────────✰\n`;
+      msg += `╭─────✰[🌟 𝐄𝐍𝐉𝐎𝐘 🌟]\n│> TOTAL COMMANDS: [${total}]\n│\n│> TYPE: [ ${prefix}HELP <COMMAND> ]\n│\n│> OWNER: hriday\n╰────────────✰\n`;
 
-      msg += `╭─────✰\n│ 💖 মালয়েশিয়া সিঙ্গেল বয়  💖\n╰────────────✰`;
+      msg += `╭─────✰\n│ 💖 মালয়েশিয়া সিঙ্গেল  বয় 💖\n╰────────────✰`;
 
       return message.reply({
         body: msg,
