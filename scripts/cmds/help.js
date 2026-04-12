@@ -6,7 +6,7 @@ let xfont = null;
 let yfont = null;
 let categoryEmoji = null;
 
-const HELP_GIF = "https://files.catbox.moe/g5vr8h.mp4";
+const HELP_GIF = "https://i.imgur.com/d9S9s9I.jpeg";
 
 async function loadResources() {
   try {
