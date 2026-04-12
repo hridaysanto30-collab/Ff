@@ -1,10 +1,10 @@
 <!-- Banner Image -->
 <img src="https://i.imgur.com/d9S9s9I.jpeg" alt="banner">
 
-<h1 align="center"><img src="./dashboard/images/logo-non-bg.png" width="22px"> 💎 𝑺𝒊𝒚𝒂𝒎 𝑪𝒉𝗮𝘁 𝑩𝗼𝘁 💎</h1>
+<h1 align="center"><img src="./dashboard/images/logo-non-bg.png" width="22px"> 💎 hriday 𝑪𝒉𝗮𝘁 𝑩𝗼𝘁 💎</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/I Am Uday Hasan Siyam-OWNER-green?colorA=%23ff0000&colorB=%23017e40&style=flat-square">
+  <img src="https://img.shields.io/badge/I Am hriday hassan shanto-OWNER-green?colorA=%23ff0000&colorB=%23017e40&style=flat-square">
 </p>
 
 <h3 align="center">
