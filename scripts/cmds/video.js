@@ -6,104 +6,112 @@ const path = require("path");
 module.exports = {
   config: {
     name: "video",
-    version: "2.2.2",
-    author: "Milon Pro",
+    version: "1.0.0",
+    author: "Custom by ChatGPT",
     countDown: 5,
     role: 0,
-    shortDescription: "Search & download YouTube videos",
-    longDescription: "Search YouTube videos by name and download without prefix",
+    shortDescription: "Download YouTube video",
     category: "media",
     guide: {
-      en: "video <video name>"
+      en: "video <name>"
     }
   },
 
   onStart: async function ({ api, event, args }) {
     const { threadID, messageID, body } = event;
-    const creatorName = "Milon Islam";
 
     let query = args.join(" ");
-    
-    // Handling No-prefix input
     if (!query && body) {
       query = body.replace(/^video\s+/i, "").trim();
     }
 
-    // Your requested English error message and example
-    if (!query || query.toLowerCase() === "video") {
+    if (!query) {
       return api.sendMessage(
-        `❌ Please provide a song name.\n📌 Example: video Let Me Love You`,
+        "❌ Enter video name\nExample: video Faded",
         threadID,
         messageID
       );
     }
 
-    let tempMsgID = null;
+    let loading;
 
     try {
-      const searching = await api.sendMessage(
-        `🔍 Searching\n━━━━━━━━━━━━━━━\n📌 Query: ${query}\n⏳ Please wait...`,
+      // 🔍 Searching
+      loading = await api.sendMessage(`🔍 Searching: ${query}`, threadID);
+
+      const search = await axios.get(
+        `https://yt-search-milon.vercel.app/search?q=${encodeURIComponent(query)}`
+      );
+
+      const video = search.data?.result?.[0];
+
+      if (!video || !video.url) {
+        throw new Error("Video not found!");
+      }
+
+      await api.unsendMessage(loading.messageID);
+
+      // ⬇️ Downloading
+      loading = await api.sendMessage(
+        `🎬 ${video.title}\n⏳ Downloading...`,
         threadID
       );
-      tempMsgID = searching.messageID;
 
-      // Searching using BetaDash API
-      const searchRes = await axios.get(
-        `https://betadash-search-download.vercel.app/yt?search=${encodeURIComponent(query)}`
+      const dl = await axios.get(
+        `https://yt-downloader-milon.vercel.app/dl?url=${video.url}`
       );
 
-      const video = searchRes.data?.[0];
-      if (!video || !video.url) throw new Error("No results found.");
+      const downloadUrl = dl.data?.url;
 
-      await api.unsendMessage(tempMsgID).catch(() => {});
+      if (!downloadUrl) {
+        throw new Error("Download link error!");
+      }
 
-      const downloading = await api.sendMessage(
-        `🎬 Video Found\n━━━━━━━━━━━━━━━\n📖 Title: ${video.title}\n⬇️ Downloading...`,
-        threadID
+      // 📁 Save file
+      const filePath = path.join(__dirname, "cache", `video_${Date.now()}.mp4`);
+      await fs.ensureDir(path.dirname(filePath));
+
+      const writer = fs.createWriteStream(filePath);
+      const stream = await axios({
+        url: downloadUrl,
+        method: "GET",
+        responseType: "stream"
+      });
+
+      stream.data.pipe(writer);
+
+      await new Promise((resolve, reject) => {
+        writer.on("finish", resolve);
+        writer.on("error", reject);
+      });
+
+      await api.unsendMessage(loading.messageID);
+
+      // 📤 Send video
+      await api.sendMessage(
+        {
+          body:
+            `🎬 VIDEO READY\n━━━━━━━━━━━━━━\n` +
+            `📖 ${video.title}\n` +
+            `⏱ ${video.timestamp || "Unknown"}`,
+          attachment: fs.createReadStream(filePath)
+        },
+        threadID,
+        async () => {
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+        },
+        messageID
       );
-      tempMsgID = downloading.messageID;
-
-      // Getting download link using Imran API
-      const dlRes = await axios.get(
-        `https://yt-api-imran.vercel.app/api?url=${video.url}`
-      );
-
-      const downloadUrl = dlRes.data?.downloadUrl;
-      if (!downloadUrl) throw new Error("Download link not available.");
-
-      // Fetching the video buffer
-      const buffer = (
-        await axios.get(downloadUrl, { responseType: "arraybuffer" })
-      ).data;
-
-      const cacheDir = path.join(process.cwd(), "cache");
-      await fs.ensureDir(cacheDir);
-
-      const filePath = path.join(cacheDir, `video_${Date.now()}.mp4`);
-      await fs.writeFile(filePath, buffer);
-
-      const finalMessage = {
-        body:
-          `━━━━━━━━━━━━━━━━━━\n` +
-          `🎬 VIDEO READY\n` +
-          `━━━━━━━━━━━━━━━━━━\n` +
-          `📖 Title: ${video.title}\n` +
-          `⏱ Duration: ${video.time}\n` +
-          `🖌️ Power by: ${creatorName}\n` +
-          `━━━━━━━━━━━━━━━━━━`,
-        attachment: fs.createReadStream(filePath)
-      };
-
-      await api.sendMessage(finalMessage, threadID, async () => {
-        if (fs.existsSync(filePath)) await fs.unlink(filePath);
-      }, messageID);
-
-      if (tempMsgID) await api.unsendMessage(tempMsgID).catch(() => {});
 
     } catch (err) {
-      if (tempMsgID) await api.unsendMessage(tempMsgID).catch(() => {});
+      if (loading) {
+        await api.unsendMessage(loading.messageID).catch(() => {});
+      }
+
       api.sendMessage(
-        `❌ Failed\n━━━━━━━━━━━━━━━\n${err.message || "An unexpected error occurred."}`,
+        `❌ Error: ${err.message}`,
         threadID,
         messageID
       );
