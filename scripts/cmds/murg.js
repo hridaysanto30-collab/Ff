@@ -1,40 +1,16 @@
-const delay = (ms) => new Promise(res => setTimeout(res, ms));
-
-// active loop storage
-const activeMurgi = new Map();
-
 module.exports = {
   config: {
-    name: "murg",
-    version: "1.1.0",
-    role: 2,
-    author: "Akash Edit",
-    description: "Loop bad word messages until stopped",
+    name: "mugri",
+    version: "1.0",
+    author: "GodBot Upgrade",
     category: "fun",
-    usages: "@mention | off",
-    cooldowns: 5,
+    description: "Funny & cute reply system"
   },
 
-  onStart: async function({ message, event, args }) {
-    // OFF command
-    if (args[0] && args[0].toLowerCase() === "off") {
-      if (activeMurgi.has(event.threadID)) {
-        activeMurgi.set(event.threadID, false);
-        return message.reply("🛑 Murgi mode stopped.");
-      } else {
-        return message.reply("⚠️ Murgi mode is not running.");
-      }
-    }
+  handleEvent: async function ({ api, event }) {
+    const msg = (event.body || "").toLowerCase();
 
-    const mention = Object.keys(event.mentions)[0];
-    if (!mention) {
-      return message.reply("Please @mention a target first!");
-    }
-
-    const name = event.mentions[mention];
-    const arraytag = [{ id: mention, tag: name }];
-
-    const messages = [
+    const replies = [
       "খা*নকির পোলা রেডি তো চু*দা খাওয়ার জন্য 😈 ",
         "এখন তোর মার দুধ দরে ঘুমামু সকালে তোর বাপরে পুকটি মারতে জামু গুড নাইট ছোট 😚",
         "শুন খানকির পোলা ইডেট করতে করতে মইরা যা পোস্ট কইরা ফেমাস কর আমারে, 🙄",
@@ -77,5 +53,15 @@ module.exports = {
         " তর মারে ১২ মাস চুদে গেলেও ওর ভোদার কিছু হবে না কারন মাগি তো ভোদা লোহা বানায় দিছে 😹💥🦶",
         "😹_____ তোর কচি বোনকে বিয়ে দিবি রেন্ডি মাগির বাচ্চা!👅 ",
     ];
+    
+    const triggers = ["hi", "hello", "hai", "yo", "hey", "kemon", "kire", "ki obostha"];
 
-    activeMurgi.set(event.threadID,
+    if (!triggers.some(t => msg.includes(t))) return;
+
+    const reply = replies[Math.floor(Math.random() * replies.length)];
+
+    return api.sendMessage(reply, event.threadID, event.messageID);
+  },
+
+  onStart: async function () {}
+};
