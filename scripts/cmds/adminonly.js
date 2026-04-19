@@ -6,64 +6,57 @@ module.exports = {
 	config: {
 		name: "adminonly",
 		aliases: ["adonly", "onlyad", "onlyadmin"],
-		version: "1.5",
-		author: "siyam",
-		countDown: 5,
+		version: "2.0",
+		author: "siyam ⚡ upgraded",
+		countDown: 3,
 		role: 2,
 		description: {
-			vi: "bật/tắt chế độ chỉ admin mới có thể sử dụng bot",
-			en: "turn on/off only admin can use bot"
+			en: "Turn on/off admin-only mode with notification control"
 		},
-		category: "owner",
-		guide: {
-			vi: "   {pn} [on | off]: bật/tắt chế độ chỉ admin mới có thể sử dụng bot"
-				+ "\n   {pn} noti [on | off]: bật/tắt thông báo khi người dùng không phải là admin sử dụng bot",
-			en: "   {pn} [on | off]: turn on/off the mode only admin can use bot"
-				+ "\n   {pn} noti [on | off]: turn on/off the notification when user is not admin use bot"
-		}
+		category: "owner"
 	},
 
 	langs: {
-		vi: {
-			turnedOn: "Đã bật chế độ chỉ admin mới có thể sử dụng bot",
-			turnedOff: "Đã tắt chế độ chỉ admin mới có thể sử dụng bot",
-			turnedOnNoti: "Đã bật thông báo khi người dùng không phải là admin sử dụng bot",
-			turnedOffNoti: "Đã tắt thông báo khi người dùng không phải là admin sử dụng bot"
-		},
 		en: {
-			turnedOn: "Turned on the mode only admin can use bot",
-			turnedOff: "Turned off the mode only admin can use bot",
-			turnedOnNoti: "Turned on the notification when user is not admin use bot",
-			turnedOffNoti: "Turned off the notification when user is not admin use bot"
+			turnedOn: "🔒 Admin-only mode ENABLED",
+			turnedOff: "🔓 Admin-only mode DISABLED",
+			turnedOnNoti: "🔔 Admin-only warning notifications ENABLED",
+			turnedOffNoti: "🔕 Admin-only warning notifications DISABLED",
+			invalid: "⚠️ Use: on / off / noti on / noti off"
 		}
 	},
 
-	onStart: function ({ args, message, getLang }) {
-		let isSetNoti = false;
-		let value;
-		let indexGetVal = 0;
+	onStart: function ({ args, message, getLang, event }) {
+		let mode = args[0];
+		let subMode = args[1];
 
-		if (args[0] == "noti") {
-			isSetNoti = true;
-			indexGetVal = 1;
+		// NOTI SYSTEM
+		if (mode === "noti") {
+			if (subMode === "on") {
+				config.hideNotiMessage.adminOnly = false;
+				message.reply(getLang("turnedOnNoti"));
+			} else if (subMode === "off") {
+				config.hideNotiMessage.adminOnly = true;
+				message.reply(getLang("turnedOffNoti"));
+			} else {
+				return message.reply(getLang("invalid"));
+			}
 		}
 
-		if (args[indexGetVal] == "on")
-			value = true;
-		else if (args[indexGetVal] == "off")
-			value = false;
-		else
-			return message.SyntaxError();
-
-		if (isSetNoti) {
-			config.hideNotiMessage.adminOnly = !value;
-			message.reply(getLang(value ? "turnedOnNoti" : "turnedOffNoti"));
-		}
+		// ADMIN ONLY SYSTEM
 		else {
-			config.adminOnly.enable = value;
-			message.reply(getLang(value ? "turnedOn" : "turnedOff"));
+			if (mode === "on") {
+				config.adminOnly.enable = true;
+				message.reply(getLang("turnedOn"));
+			} else if (mode === "off") {
+				config.adminOnly.enable = false;
+				message.reply(getLang("turnedOff"));
+			} else {
+				return message.reply(getLang("invalid"));
+			}
 		}
 
+		// SAVE CONFIG SAFELY
 		fs.writeFileSync(client.dirConfig, JSON.stringify(config, null, 2));
 	}
 };
