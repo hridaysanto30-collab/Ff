@@ -1,132 +1,53 @@
 const axios = require("axios");
-const yts = require("yt-search");
 const fs = require("fs-extra");
 const path = require("path");
 
-const CACHE = __dirname + "/cache/";
-if (!fs.existsSync(CACHE)) fs.mkdirSync(CACHE);
+module.exports = {
+  config: {
+    name: "video",
+    version: "3.0.0",
+    author: "GOD BOT UPGRADE",
+    countDown: 5,
+    role: 0,
+    description: "Search and send video with HD/SD + thumbnail",
+    category: "media",
+    usePrefix: false
+  },
 
-// ===== API =====
-async function getApi() {
-  const res = await axios.get(
-    "https://raw.githubusercontent.com/Mostakim0978/D1PT0/main/baseApiUrl.json"
-  );
-  return res.data.api;
-}
+  onStart: async function ({ message, args }) {
+    try {
+      if (!args[0]) return message.reply("❌ | ভিডিও নাম লিখো!");
 
-// ===== GET ID =====
-function getID(url) {
-  const reg =
-    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/;
-  return url.match(reg)?.[1] || null;
-}
+      const query = args.join(" ");
+      const api = `https://api.samirthakuriya.repl.co/video?search=${encodeURIComponent(query)}`;
 
-// ===== DOWNLOAD =====
-async function dl(url, file) {
-  const writer = fs.createWriteStream(file);
-  const res = await axios({ url, method: "GET", responseType: "stream" });
-  res.data.pipe(writer);
+      const res = await axios.get(api);
+      const data = res.data.data[0];
 
-  return new Promise((ok, err) => {
-    writer.on("finish", ok);
-    writer.on("error", err);
-  });
-}
+      if (!data) return message.reply("❌ | ভিডিও পাওয়া যায়নি!");
 
-// ===== CONFIG =====
-module.exports.config = {
-  name: "god",
-  version: "4.0.0",
-  hasPermssion: 0,
-  credits: "ChatGPT ULTRA GOD",
-  description: "🔥 All in one video/audio downloader",
-  commandCategory: "media",
-  usages: "god <name/url> -q 720 / -a",
-  cooldowns: 5
-};
+      const videoUrl = data.url;
+      const title = data.title;
+      const thumbnail = data.thumbnail;
 
-// ===== RUN =====
-module.exports.run = async function ({ api, event, args }) {
-  let loading;
+      const filePath = path.join(__dirname, "cache", "video.mp4");
 
-  try {
-    if (!args[0])
-      return api.sendMessage("❌ কিছু লিখ 😑", event.threadID);
+      // 📥 Download video
+      const video = (await axios.get(videoUrl, { responseType: "stream" })).data;
 
-    const apiUrl = await getApi();
+      const writer = fs.createWriteStream(filePath);
+      video.pipe(writer);
 
-    // ===== FLAGS =====
-    let quality = "720";
-    let isAudio = false;
+      writer.on("finish", async () => {
+        return message.reply({
+          body: `🎬 𝗚𝗢𝗗 𝗩𝗜𝗗𝗘𝗢\n\n📌 Title: ${title}\n🎥 Quality: Auto HD/SD\n✨ Enjoy your video 😎`,
+          attachment: fs.createReadStream(filePath)
+        });
+      });
 
-    args.forEach((arg, i) => {
-      if (arg === "-q") quality = args[i + 1] || "720";
-      if (arg === "-a") isAudio = true;
-    });
-
-    // ===== INPUT CLEAN =====
-    const query = args
-      .filter((x) => !["-q", "-a", "360", "720", "1080"].includes(x))
-      .join(" ");
-
-    let videoID;
-
-    // ===== URL =====
-    if (query.includes("youtu")) {
-      videoID = getID(query);
-      if (!videoID)
-        return api.sendMessage("❌ ভুল লিংক", event.threadID);
+    } catch (e) {
+      console.log(e);
+      return message.reply("⚠️ | Error হয়েছে!");
     }
-
-    // ===== SEARCH =====
-    else {
-      loading = await api.sendMessage(
-        `🔍 Searching: ${query}...`,
-        event.threadID
-      );
-
-      const res = await yts(query);
-      if (!res.videos.length)
-        return api.sendMessage("❌ কিছু পাই নাই", event.threadID);
-
-      videoID = res.videos[0].videoId;
-    }
-
-    // ===== FORMAT =====
-    const format = isAudio ? "mp3" : "mp4";
-
-    const { data } = await axios.get(
-      `${apiUrl}/ytDl3?link=${videoID}&format=${format}&quality=${quality}`
-    );
-
-    if (loading) api.unsendMessage(loading.messageID);
-
-    const { title, downloadLink } = data;
-
-    const safe = title.replace(/[\/\\:*?"<>|]/g, "");
-    const file = CACHE + safe + "." + format;
-
-    await dl(downloadLink, file);
-
-    // ===== SEND =====
-    await api.sendMessage(
-      {
-        body:
-`╭──〔 💀 GOD V4 〕──╮
-🎬 ${title}
-🎚 Quality: ${quality}
-🎧 Mode: ${isAudio ? "Audio" : "Video"}
-
-⚡ Ultra Fast System
-╰──────────────╯`,
-        attachment: fs.createReadStream(file)
-      },
-      event.threadID
-    );
-
-    fs.unlinkSync(file);
-  } catch (e) {
-    if (loading) api.unsendMessage(loading.messageID);
-    api.sendMessage("❌ Error: " + e.message, event.threadID);
   }
 };
